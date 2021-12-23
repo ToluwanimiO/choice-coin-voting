@@ -1,53 +1,64 @@
 
-// import React, {useState} from "react";
+import {useState} from "react";
 import './App.css';
 import logo from './assets/logo2.png'
 import welcome from './assets/bgwelcome.jpg'
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 // import algosdk from "algosdk"; 
 const myAlgoWallet = new MyAlgoConnect();
-// const [value, setValue] = useState(1);
+var nameUser ='tolu'
 
-async function connectToMyAlgo() {
-  // This function connects the voters wallet to my program, it brings up a pop up used to connect user's wallet
-  try {
-    const accounts = await myAlgoWallet.connect();
-    const addresses = accounts.map(account => account.address);
-    window.acc = accounts
-    // if addresses is not empty, the condition returns true and focuses on the input for choice amount and display user's address
-    if (addresses)
-    {   
-      // focuses on the input automatically
-      document.getElementById("amount").focus();
-      console.log(accounts[0].name)
-      // this.setState({
-      //   nameUser:accounts[0].name
-      // })
-    }
-    
-  // in case of an error in connection
-  } catch (err) {
-    console.error(err);
-  }
-  
-}
 function App() {
   // returns what is displayed for the user to see
+  const [userAddress,setUserAddress] = useState('')
+  async function connectToMyAlgo() {
+    // This function connects the voters wallet to my program, it brings up a pop up used to connect user's wallet
+    try {
+      const accounts = await myAlgoWallet.connect();
+      const addresses = accounts.map(account => account.address);
+      window.acc = accounts
+      // if addresses is not empty, the condition returns true and focuses on the input for choice amount and display user's address
+      if (addresses)
+      {   
+        // focuses on the input automatically
+        document.getElementById("amount").focus();
+        var connect = document.getElementById('connectBtn')
+        connect.classList.add('d-none')
+        var userAdd =document.getElementById('address')
+        userAdd.classList.remove('d-none')
+        setUserAddress(accounts[0].address)
+      }
+      
+    // in case of an error in connection
+    } catch (err) {
+      console.error(err);
+    }
+    
+  }
+  function copyText()
+  {
+    var copyText = document.getElementById("addressText");
+    navigator.clipboard.writeText(copyText.innerHTML);
+  }
   return (
     <div className="">
       <nav className="navbar justify-content-between pl-5 pr-5 shadow-sm">
         
         {/* <a href='/' className="navbar-brand d-block d-md-none"><img alt="text" src={logo} width="auto" height="50px"/></a> */}
-        <a href='/' className="navbar-brand d-none d-md-block letter">
+        <span className="navbar-brand d-none d-md-block letter">
           {/* <img alt="text" src={logo} width="auto" height="50px"/>  */}
           &nbsp;Choice Coin Voting
-        </a>
+        </span>
         <a href='/' className="navbar-brand d-block d-md-none letter">
           {/* <img alt="text" src={logo} width="auto" height="50px"/>  */}
           &nbsp;Choice
         </a>
-        {/* <span>{this.state.nameUser}</span> */}
-        <button id="connectBtn" className="btn btn-lg btn-outline-primary my-2 my-sm-0" onClick={connectToMyAlgo}>Connect Wallet</button>
+        <span id="address" className="text-white d-none containerAddress">
+          <span id="addressText" className="btn text-white addressBtn ">{userAddress}</span>
+          <span>...&nbsp;</span>
+          <button className=" integration-checklist__copy-button" onClick={copyText}><i className="fa fa-clone"></i></button>
+        </span>
+        <button id="connectBtn" className="btn btn-connect btn-outline-primary my-2 my-sm-0" onClick={connectToMyAlgo}>Connect Wallet</button>
         
       </nav>
       <div className="dropdown-divider bg-secondary"></div>
