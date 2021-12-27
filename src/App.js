@@ -92,11 +92,12 @@ function App() {
                 <button onClick={vote} className="btn btn-lg btn-primary btn-color-blue">Submit</button>
             </div>
         </div>
-        <div id="success" className=" text-center p-3 d-none" style={{height: "25em"}}>
+        <div id="success" className=" text-center d-none " style={{height: "25em"}}>
             <div className="text-center centerSuccess">
                 <i className="fa fa-check fa-5x text-success"></i><br/>
                 <p className="text-success "><b>Succesfully Voted </b></p>
-                <i id="result" className="text-white"></i>
+                <div id="id" className="textWrap text-white"></div><br />
+                <i><div id="result" className="text-white "></div></i>
             </div>
         </div>
         
@@ -121,10 +122,10 @@ function vote()
     else
     {
         // if user picks yes, the coin is sent to the zero address
+        var id_container =  document.getElementById("id");
         var result = document.getElementById("result");
         if (document.getElementById("yes").checked)
         {
-            console.log(amount)
             const zero_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
             let txn = {
               fee: 1000,
@@ -138,23 +139,31 @@ function vote()
               genesisID: "testnet-v1.0"
           };
                   
-          // result.innerHTML = amount+" choice coin sent to zero address"
-          // var element = document.getElementById("wallet");
-          // element.classList.add("d-none");
-          // var element2 = document.getElementById("success");
-          // element2.classList.remove("d-none");  
+           
           myAlgoWallet.signTransaction(txn)
           .then((signedTxn) => {
             // after  succesfully signing, the coin can be sent, then the success messsage is displayed
+              // const algosdk = require('algosdk');
+
+              // const algodClient = new algosdk.Algodv2('', 'https://api.testnet.algoexplorer.io', '');
+
+              // algodClient.sendRawTransaction(signedTxn.blob).do()
+              // .then((txn) => {
+              //     console.log(txn);
+              // })
+              id_container.innerHTML="Transaction ID: "+ signedTxn.txID
+              result.innerHTML =amount+" choice coin sent to zero address"
+              var element = document.getElementById("wallet");
+              element.classList.add("d-none");
+              var element2 = document.getElementById("success");
+              element2.classList.remove("d-none"); 
               console.log(signedTxn,"sign");
               
                   
           })
           .catch((err) => {
-              // I keep getting an error: ReferenceError: Buffer is not defined at MyAlgoConnect.signTransaction
-              // this is caused by webpack 5 as webpack 5 does not parse Buffer type, using webpack4 should fix it
               console.log(err,"err") 
-              alert("Error in transattion") 
+              alert("Error in transaction") 
             });
         }
         else if(document.getElementById("no").checked)
@@ -185,8 +194,6 @@ function vote()
                   
           })
           .catch((err) => {
-              // I keep getting an error: ReferenceError: Buffer is not defined at MyAlgoConnect.signTransaction
-              // this is caused by webpack 5 as webpack 5 does not parse Buffer type, using webpack4 should fix it
               console.log(err)  
               alert("Error in transattion") 
             });
