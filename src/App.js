@@ -1,8 +1,6 @@
 
 import {useState} from "react";
 import './App.css';
-import logo from './assets/logo2.png'
-import welcome from './assets/bgwelcome.jpg'
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 // import algosdk from "algosdk"; 
 const myAlgoWallet = new MyAlgoConnect();
