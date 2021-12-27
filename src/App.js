@@ -2,30 +2,32 @@
 import {useState} from "react";
 import './App.css';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
-// import algosdk from "algosdk"; 
-const myAlgoWallet = new MyAlgoConnect();
-window.acc =''
+// import algosdk from "algosdk";
+const myAlgoWallet = new MyAlgoConnect(); // new  instance of  MyAlgoConnect
+window.acc ='' // stores accounts of users
 
 function App() {
-  // returns what is displayed for the user to see
-  const [userAddress,setUserAddress] = useState('')
+  const [userAddress,setUserAddress] = useState('') // stores users wallet address
   async function connectToMyAlgo() {
     // This function connects the voters wallet to my program, it brings up a pop up used to connect user's wallet
     try {
       const accounts = await myAlgoWallet.connect();
       const addresses = accounts.map(account => account.address);
       window.acc = accounts
-      // if addresses is not empty, the condition returns true and focuses on the input for choice amount and display user's address
+      // if addresses is not empty, the cursor focuses on the input and display user's address
       if (addresses)
       {   
-        // focuses on the input automatically
+        // if the cureent error message is "connect to your wallet", a succesful connection removes that error message
         var error = document.getElementById("err");
         if (error.innerHTML == "Connect to your wallet")
         {
           error.innerHTML =""
           error.classList.add("d-none")
         }
+        // focuses on the input automatically
         document.getElementById("amount").focus();
+
+        // removes connect button and shows users address
         var connect = document.getElementById('connectBtn')
         connect.classList.add('d-none')
         var userAdd =document.getElementById('address')
@@ -42,6 +44,7 @@ function App() {
   }
   function copyText()
   {
+    // This function is used to copy users address to clipboard
     var copyText = document.getElementById("addressText");
     navigator.clipboard.writeText(copyText.innerHTML);
   }
@@ -106,11 +109,12 @@ function App() {
   );
 }
 
-function vote()
+function vote() // used for voting
 {
+  // if the wallet isn't connected, an error message "connect to wallet" is displayed
   if (window.acc[0])
   {
-    // used for voting
+  
     var amount = document.getElementById("amount").value
     // prevents user for voting if amount is empty
     if(amount == "")
@@ -120,18 +124,18 @@ function vote()
         error.innerHTML = "Enter an amount"
     }
     else
-    {
-        // if user picks yes, the coin is sent to the zero address
+    {        
         var id_container =  document.getElementById("id");
         var result = document.getElementById("result");
+        // if user picks yes, the coin is sent to the zero address
         if (document.getElementById("yes").checked)
         {
             const zero_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
             let txn = {
               fee: 1000,
               type: 'pay',
-              from: window.acc[0].address,
-              to:  zero_address,
+              from: window.acc[0].address, //sender
+              to:  zero_address, // receiver
               amount: Number(amount), // amount inputed by user
               firstRound: 12449335,
               lastRound: 12450335,
@@ -139,10 +143,12 @@ function vote()
               genesisID: "testnet-v1.0"
           };
                   
-           
+          // signs the transaction 
           myAlgoWallet.signTransaction(txn)
           .then((signedTxn) => {
-            // after  succesfully signing, the coin can be sent, then the success messsage is displayed
+              // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
+
+              // attempt to send coin
               // const algosdk = require('algosdk');
 
               // const algodClient = new algosdk.Algodv2('', 'https://api.testnet.algoexplorer.io', '');
@@ -151,6 +157,8 @@ function vote()
               // .then((txn) => {
               //     console.log(txn);
               // })
+              
+              // success message displaying transaction ID
               id_container.innerHTML="Transaction ID: "+ signedTxn.txID
               result.innerHTML =amount+" choice coin sent to zero address"
               var element = document.getElementById("wallet");
@@ -175,27 +183,31 @@ function vote()
               type: 'pay',
               from: window.acc[0].address,
               to:  one_address,
-              amount: amount, // 1 algo
+              amount: Number(amount), // amount inputed by user
               firstRound: 12449335,
               lastRound: 12450335,
               genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
               genesisID: "testnet-v1.0"
           };
           
-          result.innerHTML = amount+" choice coin sent to one address"
-          var element = document.getElementById("wallet");
-          element.classList.add("d-none");
-          var element2 = document.getElementById("success");
-          element2.classList.remove("d-none");   
+           
           myAlgoWallet.signTransaction(txn)
           .then((signedTxn) => {
-            // after  succesfully signing, the coin can be sent, then the success messsage is displayed
+            // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
+
+            // success message displaying transaction ID
+            id_container.innerHTML="Transaction ID: "+ signedTxn.txID
+            result.innerHTML = amount+" choice coin sent to one address"
+            var element = document.getElementById("wallet");
+            element.classList.add("d-none");
+            var element2 = document.getElementById("success");
+            element2.classList.remove("d-none");  
             console.log(signedTxn);
                   
           })
           .catch((err) => {
               console.log(err)  
-              alert("Error in transattion") 
+              alert("Error in transaction") 
             });
              
         }
@@ -209,6 +221,7 @@ function vote()
             
   }
   else{
+    // reminds user to connect to wallet
     var error = document.getElementById("err");
       error.classList.remove("d-none")
       error.innerHTML = "Connect to your wallet"
