@@ -6,7 +6,7 @@ import welcome from './assets/bgwelcome.jpg'
 import MyAlgoConnect from '@randlabs/myalgo-connect';
 // import algosdk from "algosdk"; 
 const myAlgoWallet = new MyAlgoConnect();
-var nameUser ='tolu'
+window.acc =''
 
 function App() {
   // returns what is displayed for the user to see
@@ -21,6 +21,12 @@ function App() {
       if (addresses)
       {   
         // focuses on the input automatically
+        var error = document.getElementById("err");
+        if (error.innerHTML == "Connect to your wallet")
+        {
+          error.innerHTML =""
+          error.classList.add("d-none")
+        }
         document.getElementById("amount").focus();
         var connect = document.getElementById('connectBtn')
         connect.classList.add('d-none')
@@ -32,6 +38,7 @@ function App() {
     // in case of an error in connection
     } catch (err) {
       console.error(err);
+      alert("Connection error")
     }
     
   }
@@ -102,7 +109,9 @@ function App() {
 
 function vote()
 {
-  // used for voting
+  if (window.acc[0])
+  {
+    // used for voting
     var amount = document.getElementById("amount").value
     // prevents user for voting if amount is empty
     if(amount == "")
@@ -117,47 +126,49 @@ function vote()
         var result = document.getElementById("result");
         if (document.getElementById("yes").checked)
         {
-            const zero_address = ''
+            console.log(amount)
+            const zero_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
             let txn = {
               fee: 1000,
               type: 'pay',
               from: window.acc[0].address,
               to:  zero_address,
-              amount: 1000000, // 1 algo
+              amount: Number(amount), // amount inputed by user
               firstRound: 12449335,
               lastRound: 12450335,
               genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
               genesisID: "testnet-v1.0"
           };
                   
-          result.innerHTML = amount+" choice coin sent to zero address"
-          var element = document.getElementById("wallet");
-          element.classList.add("d-none");
-          var element2 = document.getElementById("success");
-          element2.classList.remove("d-none");  
+          // result.innerHTML = amount+" choice coin sent to zero address"
+          // var element = document.getElementById("wallet");
+          // element.classList.add("d-none");
+          // var element2 = document.getElementById("success");
+          // element2.classList.remove("d-none");  
           myAlgoWallet.signTransaction(txn)
           .then((signedTxn) => {
             // after  succesfully signing, the coin can be sent, then the success messsage is displayed
-              console.log(signedTxn);
+              console.log(signedTxn,"sign");
               
                   
           })
           .catch((err) => {
               // I keep getting an error: ReferenceError: Buffer is not defined at MyAlgoConnect.signTransaction
               // this is caused by webpack 5 as webpack 5 does not parse Buffer type, using webpack4 should fix it
-              console.log(err)  
+              console.log(err,"err") 
+              alert("Error in transattion") 
             });
         }
         else if(document.getElementById("no").checked)
         {
           // if user picks no, the coin is sent to the one address
-          const one_address = ''
+          const one_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
             let txn = {
               fee: 1000,
               type: 'pay',
               from: window.acc[0].address,
               to:  one_address,
-              amount: 1000000, // 1 algo
+              amount: amount, // 1 algo
               firstRound: 12449335,
               lastRound: 12450335,
               genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
@@ -179,6 +190,7 @@ function vote()
               // I keep getting an error: ReferenceError: Buffer is not defined at MyAlgoConnect.signTransaction
               // this is caused by webpack 5 as webpack 5 does not parse Buffer type, using webpack4 should fix it
               console.log(err)  
+              alert("Error in transattion") 
             });
              
         }
@@ -190,6 +202,11 @@ function vote()
         }
     }
             
-            
+  }
+  else{
+    var error = document.getElementById("err");
+      error.classList.remove("d-none")
+      error.innerHTML = "Connect to your wallet"
+  }          
 }
 export default App;
