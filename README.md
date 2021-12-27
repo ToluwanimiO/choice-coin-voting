@@ -2,8 +2,11 @@
 
 ## Getting Started with Create React App
 git clone https://github.com/ToluwanimiO/choice-coin-voting.git
+
 cd choice-coin-voting
+
 npm install
+
 npm start
 
 ## Demo pictures
