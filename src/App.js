@@ -130,7 +130,7 @@ function vote() // used for voting
         // if user picks yes, the coin is sent to the zero address
         if (document.getElementById("yes").checked)
         {
-            const zero_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
+            const zero_address = ''
             let txn = {
               fee: 1000,
               type: 'pay',
@@ -177,7 +177,7 @@ function vote() // used for voting
         else if(document.getElementById("no").checked)
         {
           // if user picks no, the coin is sent to the one address
-          const one_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
+          const one_address = ''
             let txn = {
               fee: 1000,
               type: 'pay',
