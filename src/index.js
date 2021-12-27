@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+window.Buffer = window.Buffer || require('buffer').Buffer
 ReactDOM.render(
   <React.StrictMode>
     <App />
