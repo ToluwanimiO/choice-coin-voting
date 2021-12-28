@@ -142,13 +142,24 @@ function vote() // used for voting
               // genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
               // genesisID: "testnet-v1.0",
               // xaid:297995609,
+
+              // fee: 1000,
+              // type: 'axfer',
+              // from: window.acc[0].address, //sender
+              // to:  'OYY5IUIX37LM4YTWZZLVO5E6RR3LDID7G5D7N2M7KUV5GSLX62VONE2SXE', // receiver
+              // amount: Number(amount), // amount inputed by user
+              // firstRound: 15522598,
+              // lastRound: 18292336,
+              // genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+              // genesisID: "testnet-v1.0",
+              // assetIndex:297995609,
               fee: 1000,
               type: 'pay',
               from: window.acc[0].address,
               to:  zero_address,
               amount: Number(amount), // amount inputed by user
               firstRound: 12449335,
-              lastRound: 12450335,
+              lastRound: 18292336,
               genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
               genesisID: "testnet-v1.0"
           };
@@ -159,22 +170,23 @@ function vote() // used for voting
               // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
 
               // attempt to send coin
-              // const algosdk = require('algosdk');
+              var algod_token = "" 
+              var headers = {"X-API-Key": algod_token }
+              const algodClient = new algosdk.Algodv2('', "https://testnet-algorand.api.purestake.io/ps2", headers);
 
-              // const algodClient = new algosdk.Algodv2('', 'https://api.testnet.algoexplorer.io', '');
-
-              // algodClient.sendRawTransaction(signedTxn.blob).do()
+              let response = algodClient.sendRawTransaction(signedTxn.blob).do()
+              console.log(response)
               // .then((txn) => {
               //     console.log(txn);
               // })
               
               // success message displaying transaction ID
-              id_container.innerHTML="Transaction ID: "+ signedTxn.txID
-              result.innerHTML =amount+" choice coin sent to zero address"
-              var element = document.getElementById("wallet");
-              element.classList.add("d-none");
-              var element2 = document.getElementById("success");
-              element2.classList.remove("d-none"); 
+              // id_container.innerHTML="Transaction ID: "+ signedTxn.txID
+              // result.innerHTML =amount+" choice coin sent to zero address"
+              // var element = document.getElementById("wallet");
+              // element.classList.add("d-none");
+              // var element2 = document.getElementById("success");
+              // element2.classList.remove("d-none"); 
               console.log(signedTxn,"sign");
               
                   
@@ -205,6 +217,13 @@ function vote() // used for voting
           .then((signedTxn) => {
             // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
 
+            const algodClient = new algosdk.Algodv2('', 'https://api.testnet.algoexplorer.io', '');
+
+              algodClient.sendRawTransaction(signedTxn.blob).do()
+              .then((txn) => {
+                  console.log(txn);
+              })
+              
             // success message displaying transaction ID
             id_container.innerHTML="Transaction ID: "+ signedTxn.txID
             result.innerHTML = amount+" choice coin sent to one address"
