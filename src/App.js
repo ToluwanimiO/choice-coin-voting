@@ -111,7 +111,7 @@ function App() {
 
 function vote() // used for voting
 {
-  // if the wallet isn't connected, an error message "connect to wallet" is displayed
+  // if the wallet isn't connected, an error message "connect to wallet" is displayed(check the else statement)
   if (window.acc[0])
   {
   
@@ -128,123 +128,110 @@ function vote() // used for voting
         var id_container =  document.getElementById("id");
         var result = document.getElementById("result");
         // if user picks yes, the coin is sent to the zero address
-        if (document.getElementById("yes").checked)
-        {
-            const zero_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
-            let txn = {
-              // fee: 1000,
-              // type: 'axfer',
-              // snd: window.acc[0].address, //sender
-              // arcv:  'OYY5IUIX37LM4YTWZZLVO5E6RR3LDID7G5D7N2M7KUV5GSLX62VONE2SXE', // receiver
-              // aamt: Number(amount), // amount inputed by user
-              // firstRound: 15522598,
-              // lastRound: 18292336,
-              // genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
-              // genesisID: "testnet-v1.0",
-              // xaid:297995609,
+        // const algosdk = require('algosdk');
+        
+        // purestake api 
+        const baseServer = "https://testnet-algorand.api.purestake.io/ps2";
+        const port = "";
 
-              // fee: 1000,
-              // type: 'axfer',
-              // from: window.acc[0].address, //sender
-              // to:  'OYY5IUIX37LM4YTWZZLVO5E6RR3LDID7G5D7N2M7KUV5GSLX62VONE2SXE', // receiver
-              // amount: Number(amount), // amount inputed by user
-              // firstRound: 15522598,
-              // lastRound: 18292336,
-              // genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
-              // genesisID: "testnet-v1.0",
-              // assetIndex:297995609,
-              fee: 1000,
-              type: 'pay',
-              from: window.acc[0].address,
-              to:  zero_address,
-              amount: Number(amount), // amount inputed by user
-              firstRound: 12449335,
-              lastRound: 18292336,
-              genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
-              genesisID: "testnet-v1.0"
-          };
-                  
-          // signs the transaction 
-          myAlgoWallet.signTransaction(txn)
-          .then((signedTxn) => {
-              // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
-
-              // attempt to send coin
-              var algod_token = "" 
-              var headers = {"X-API-Key": algod_token }
-              const algodClient = new algosdk.Algodv2('', "https://testnet-algorand.api.purestake.io/ps2", headers);
-
-              let response = algodClient.sendRawTransaction(signedTxn.blob).do()
-              console.log(response)
-              // .then((txn) => {
-              //     console.log(txn);
-              // })
-              
-              // success message displaying transaction ID
-              // id_container.innerHTML="Transaction ID: "+ signedTxn.txID
-              // result.innerHTML =amount+" choice coin sent to zero address"
-              // var element = document.getElementById("wallet");
-              // element.classList.add("d-none");
-              // var element2 = document.getElementById("success");
-              // element2.classList.remove("d-none"); 
-              console.log(signedTxn,"sign");
-              
-                  
-          })
-          .catch((err) => {
-              console.log(err,"err") 
-              alert("Error in transaction") 
-            });
+        const token = {
+          'X-API-key' : 'B3SU4KcVKi94Jap2VXkK83xx38bsv95K5UZm2lab',
         }
+        let algodClient = new algosdk.Algodv2(token, baseServer, port);
+        
+        if (document.getElementById("yes").checked)
+        { 
+          (async() => {              
+              let params = await algodClient.getTransactionParams().do();              
+              const one_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
+              let txn = {
+                fee: 1000,
+                type: 'pay',
+                from: window.acc[0].address, //sender's address
+                to:  one_address, // receiver's address
+                amount: Number(amount), // amount inputed by user
+                firstRound: params.firstRound,
+                lastRound: params.lastRound ,
+                genesisHash: params.genesisHash,
+                genesisID: params.genesisID
+              };
+              // user signs the transaction 
+              myAlgoWallet.signTransaction(txn)
+              .then((signedTxn) => {
+                // after  succesfully signing, the coin is sent to the receiver's address
+                algodClient.sendRawTransaction(signedTxn.blob).do()
+                .then((txn) => {
+                  // success message displaying transaction ID
+                  id_container.innerHTML="Transaction ID: "+ signedTxn.txID
+                  result.innerHTML = amount+" choice coin sent to one address"
+                  var element = document.getElementById("wallet");
+                  element.classList.add("d-none");
+                  var element2 = document.getElementById("success");
+                  element2.classList.remove("d-none");  
+                })
+                .catch((err) => {
+                  console.log(err)  
+                  alert("Error in transaction") // triggered when an error occurs while sending the coin
+                });
+              })
+              .catch((err) => {
+                console.log(err)  
+                alert("Error in transaction") // triggered when an error occurs while signing the transaction
+              });
+          })().catch(e => {
+              console.log(e);
+          }); 
+        }        
         else if(document.getElementById("no").checked)
         {
           // if user picks no, the coin is sent to the one address
-          const one_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
+          (async() => {
+            let params = await algodClient.getTransactionParams().do();
+            const one_address = '77CO5D6NCWN675CXVEVE6DWT54V6R7JRXSV4PAZ553ZSLGHPFLUU5EIIYQ'
             let txn = {
               fee: 1000,
               type: 'pay',
-              from: window.acc[0].address,
-              to:  one_address,
+              from: window.acc[0].address, //sender's address
+              to:  one_address, //reciever's address
               amount: Number(amount), // amount inputed by user
-              firstRound: 12449335,
-              lastRound: 12450335,
-              genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
-              genesisID: "testnet-v1.0"
-          };
-          
-           
-          myAlgoWallet.signTransaction(txn)
-          .then((signedTxn) => {
-            // after  succesfully signing, the coin can be sent to the network, then the success messsage is displayed
-
-            const algodClient = new algosdk.Algodv2('', 'https://api.testnet.algoexplorer.io', '');
-
+              firstRound: params.firstRound,
+              lastRound: params.lastRound ,
+              genesisHash: params.genesisHash,
+              genesisID: params.genesisID
+            };      
+            // user signs transaction  
+            myAlgoWallet.signTransaction(txn)
+            .then((signedTxn) => {
+              // after succesfully signing, the coin is sent to the reciever's address
               algodClient.sendRawTransaction(signedTxn.blob).do()
               .then((txn) => {
-                  console.log(txn);
+                // success message displaying transaction ID
+                id_container.innerHTML="Transaction ID: "+ signedTxn.txID
+                result.innerHTML = amount+" choice coin sent to one address"
+                var element = document.getElementById("wallet");
+                element.classList.add("d-none");
+                var element2 = document.getElementById("success");
+                element2.classList.remove("d-none");
               })
-              
-            // success message displaying transaction ID
-            id_container.innerHTML="Transaction ID: "+ signedTxn.txID
-            result.innerHTML = amount+" choice coin sent to one address"
-            var element = document.getElementById("wallet");
-            element.classList.add("d-none");
-            var element2 = document.getElementById("success");
-            element2.classList.remove("d-none");  
-            console.log(signedTxn);
-                  
-          })
-          .catch((err) => {
-              console.log(err)  
-              alert("Error in transaction") 
-            });
-             
+              .catch((err) => {
+                console.log(err)  
+                alert("Error in transaction")  // triggered when an error occurs while sending the coin
+              });                                 
+            })
+            .catch((err) => {
+                console.log(err)  
+                alert("Error in transaction") // triggered when an error occurs while signing the transaction
+              });
+          })().catch(e => {
+              console.log(e);
+          }); 
         }
-        else{
+        else
+        {
           // ensure user picks either yes or no
-            var error = document.getElementById("err");
-            error.classList.remove("d-none")
-            error.innerHTML = "Pick either YES or NO to vote"
+          var error = document.getElementById("err");
+          error.classList.remove("d-none")
+          error.innerHTML = "Pick either YES or NO to vote"
         }
     }
             
