@@ -2,7 +2,7 @@
 import {useState} from "react";
 import './App.css';
 import MyAlgoConnect from '@randlabs/myalgo-connect';
-// import algosdk from "algosdk";
+import algosdk from "algosdk";
 const myAlgoWallet = new MyAlgoConnect(); // new  instance of  MyAlgoConnect
 window.acc ='' // stores accounts of users
 
@@ -130,12 +130,22 @@ function vote() // used for voting
         // if user picks yes, the coin is sent to the zero address
         if (document.getElementById("yes").checked)
         {
-            const zero_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
+            const zero_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
             let txn = {
+              // fee: 1000,
+              // type: 'axfer',
+              // snd: window.acc[0].address, //sender
+              // arcv:  'OYY5IUIX37LM4YTWZZLVO5E6RR3LDID7G5D7N2M7KUV5GSLX62VONE2SXE', // receiver
+              // aamt: Number(amount), // amount inputed by user
+              // firstRound: 15522598,
+              // lastRound: 18292336,
+              // genesisHash: "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+              // genesisID: "testnet-v1.0",
+              // xaid:297995609,
               fee: 1000,
               type: 'pay',
-              from: window.acc[0].address, //sender
-              to:  zero_address, // receiver
+              from: window.acc[0].address,
+              to:  zero_address,
               amount: Number(amount), // amount inputed by user
               firstRound: 12449335,
               lastRound: 12450335,
@@ -177,7 +187,7 @@ function vote() // used for voting
         else if(document.getElementById("no").checked)
         {
           // if user picks no, the coin is sent to the one address
-          const one_address = '4SZTEUQIURTRT37FCI3TRMHSYT5IKLUPXUI7GWC5DZFXN2DGTATFJY5ABY'
+          const one_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
             let txn = {
               fee: 1000,
               type: 'pay',
