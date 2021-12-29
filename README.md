@@ -29,3 +29,10 @@ npm start
 
 ![Picture 8](https://user-images.githubusercontent.com/42784614/147654652-b2e9a7c1-12bf-4c5f-bca9-dcf0edd4af1c.png)
 
+
+
+## :warning:Warning!!!
+
+**Ensure you have enough test choice before making a transaction**
+
+Test choice assetID used: **#21364625**
