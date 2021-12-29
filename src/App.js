@@ -154,8 +154,8 @@ function vote() // used for voting
                 lastRound: params.lastRound,
                 genesisHash: params.genesisHash,
                 genesisID: params.genesisID,
-                assetIndex:19327548,
-                assetName:'Choice'
+                assetIndex:21364625,
+                assetName:'Choice Coin'
                 
               };
               // user signs the transaction 
@@ -201,8 +201,8 @@ function vote() // used for voting
                 lastRound: params.lastRound,
                 genesisHash: params.genesisHash,
                 genesisID: params.genesisID,
-                assetIndex:19327548,
-                assetName:'Choice'
+                assetIndex:21364625,
+                assetName:'Choice Coin'
             };      
             // user signs transaction  
             myAlgoWallet.signTransaction(txn)
