@@ -124,7 +124,8 @@ function vote() // used for voting
         error.innerHTML = "Enter an amount"
     }
     else
-    {        
+    {         
+        amount = amount*100 //this is because of the decimal     
         var id_container =  document.getElementById("id");
         var result = document.getElementById("result");
         // if user picks yes, the coin is sent to the zero address
@@ -143,17 +144,20 @@ function vote() // used for voting
         { 
           (async() => {              
               let params = await algodClient.getTransactionParams().do();              
-              const one_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
+              const zero_address = 'XAQP4RP2XG47VIZ7HM32MVOPQADXPRJYIQGB3RTMBPFS725TWRLAQXUURM'
               let txn = {
                 fee: 1000,
-                type: 'pay',
-                from: window.acc[0].address, //sender's address
-                to:  one_address, // receiver's address
+                type: 'axfer',
+                from: window.acc[0].address, //sender
+                to:  zero_address, // receiver
                 amount: Number(amount), // amount inputed by user
                 firstRound: params.firstRound,
-                lastRound: params.lastRound ,
+                lastRound: params.lastRound,
                 genesisHash: params.genesisHash,
-                genesisID: params.genesisID
+                genesisID: params.genesisID,
+                assetIndex:19327548,
+                assetName:'Choice'
+                
               };
               // user signs the transaction 
               myAlgoWallet.signTransaction(txn)
@@ -190,14 +194,16 @@ function vote() // used for voting
             const one_address = '77CO5D6NCWN675CXVEVE6DWT54V6R7JRXSV4PAZ553ZSLGHPFLUU5EIIYQ'
             let txn = {
               fee: 1000,
-              type: 'pay',
-              from: window.acc[0].address, //sender's address
-              to:  one_address, //reciever's address
-              amount: Number(amount), // amount inputed by user
-              firstRound: params.firstRound,
-              lastRound: params.lastRound ,
-              genesisHash: params.genesisHash,
-              genesisID: params.genesisID
+                type: 'axfer',
+                from: window.acc[0].address, //sender
+                to:  one_address, // receiver
+                amount: Number(amount), // amount inputed by user
+                firstRound: params.firstRound,
+                lastRound: params.lastRound,
+                genesisHash: params.genesisHash,
+                genesisID: params.genesisID,
+                assetIndex:19327548,
+                assetName:'Choice'
             };      
             // user signs transaction  
             myAlgoWallet.signTransaction(txn)
