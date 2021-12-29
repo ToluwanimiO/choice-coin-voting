@@ -124,8 +124,7 @@ function vote() // used for voting
         error.innerHTML = "Enter an amount"
     }
     else
-    {         
-        amount = amount*100 //this is because of the decimal     
+    {       
         var id_container =  document.getElementById("id");
         var result = document.getElementById("result");
         // if user picks yes, the coin is sent to the zero address
@@ -150,7 +149,7 @@ function vote() // used for voting
                 type: 'axfer',
                 from: window.acc[0].address, //sender
                 to:  zero_address, // receiver
-                amount: Number(amount), // amount inputed by user
+                amount: Number(amount)*100, // amount inputed by user,  amount*100 is because of the decimal
                 firstRound: params.firstRound,
                 lastRound: params.lastRound,
                 genesisHash: params.genesisHash,
@@ -197,7 +196,7 @@ function vote() // used for voting
                 type: 'axfer',
                 from: window.acc[0].address, //sender
                 to:  one_address, // receiver
-                amount: Number(amount), // amount inputed by user
+                amount: Number(amount)*100, // amount inputed by user, amount*100 is because of the decimal
                 firstRound: params.firstRound,
                 lastRound: params.lastRound,
                 genesisHash: params.genesisHash,
